@@ -4,7 +4,7 @@ init:
   - set PATH=c:/Program Files/Git/cmd;c:/ProgramData/chocolatey/bin;c:/Program Files (x86)/Inno Setup 5;c:/Windows/system32;C:/Windows/System32/WindowsPowerShell/v1.0
 
 build_script:
-  - set PATH=C:/ruby%build_ruby%/bin;%PATH%
+  - set PATH=C:/ruby24-x64/bin;%PATH%
   - ruby --version
   - set DEPLOY_DESCRIPTION=A release description
 
