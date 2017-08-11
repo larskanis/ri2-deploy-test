@@ -1,11 +1,14 @@
 #!/bin/bash
 
-# go to project dir
-cd "$(dirname "$0")"
+# Enable colors
+normal=$(tput sgr0)
+red=$(tput setaf 1)
+green=$(tput setaf 2)
+cyan=$(tput setaf 6)
 
 # Deployment is enabled
 deploy_enabled() {
-    test -n "${GPGPASSWD}" || return 1
+    [[ -n "${GPGPASSWD}" ]]
 }
 
 # Basic status function
@@ -40,6 +43,9 @@ execute(){
     fi || failure "${status} failed"
     cd - > /dev/null
 }
+
+# go to project dir
+cd "$(dirname "$0")"
 
 
 # Decrypt and import private sigature key

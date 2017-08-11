@@ -3,9 +3,6 @@ init:
   # We use a clean PATH to avoid interferences with the hundreds of installed programs.
   - set PATH=c:/Program Files/Git/cmd;c:/ProgramData/chocolatey/bin;c:/Program Files (x86)/Inno Setup 5;c:/Windows/system32;C:/Windows/System32/WindowsPowerShell/v1.0
 
-install:
-  - c:/msys64/usr/bin/bash -lc "pacman -S --noconfirm --needed ${MINGW_PACKAGE_PREFIX}-gnupg"
-
 build_script:
   - set PATH=C:/ruby%build_ruby%/bin;%PATH%
   - ruby --version
