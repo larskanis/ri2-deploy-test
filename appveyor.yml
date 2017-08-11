@@ -1,0 +1,38 @@
+init:
+  - echo %PATH%
+  # We use a clean PATH to avoid interferences with the hundreds of installed programs.
+  - set PATH=c:/Program Files/Git/cmd;c:/ProgramData/chocolatey/bin;c:/Program Files (x86)/Inno Setup 5;c:/Windows/system32;C:/Windows/System32/WindowsPowerShell/v1.0
+
+install:
+  - c:/msys64/usr/bin/bash -lc "pacman -S --noconfirm --needed ${MINGW_PACKAGE_PREFIX}-gnupg"
+
+build_script:
+  - set PATH=C:/ruby%build_ruby%/bin;%PATH%
+  - ruby --version
+  - set DEPLOY_DESCRIPTION=A release description
+
+after_test:
+  - C:\msys64\usr\bin\bash --login -c "$(cygpath ${APPVEYOR_BUILD_FOLDER})/ci-build.sh"
+
+
+# Provide the rubyinstaller.exe files for download
+artifacts:
+  - path: appveyor.yml*
+    name: Testfile
+
+environment:
+  GPGPASSWD:
+    secure: /DELcKSZC+R4HdXgsqR1RtC+IrDZ3Xut/vzV/KgepE3M8OsjJtmWutN0+Jvc2Iv2
+
+deploy:
+  release: RubyInstaller-$(APPVEYOR_REPO_TAG_NAME)
+  description: $(DEPLOY_DESCRIPTION)
+  provider: GitHub
+  auth_token:
+    secure: <your encrypted token> # your encrypted token from GitHub
+  artifact: /.*\.yml.*/
+  draft: true
+  prerelease: true
+  on:
+    branch: master                 # release from master branch only
+    appveyor_repo_tag: false       # deploy on tag push only
