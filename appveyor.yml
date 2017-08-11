@@ -29,7 +29,7 @@ deploy:
   description: $(DEPLOY_DESCRIPTION)
   provider: GitHub
   auth_token:
-    secure: <your encrypted token> # your encrypted token from GitHub
+    secure: HIQ7Ovn+zMKskPWhnlYGvQMvdLPlZB5lhn62wzw0AUSno8UfntuTgFmPvS1pUwOW
   artifact: /.*\.yml.*/
   draft: true
   prerelease: true
