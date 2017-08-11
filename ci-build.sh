@@ -5,7 +5,7 @@ cd "$(dirname "$0")"
 
 # Deployment is enabled
 deploy_enabled() {
-    [[ -n "${GPGPASSWD}" ]]
+    test -n "${GPGPASSWD}" || return 1
 }
 
 # Basic status function
