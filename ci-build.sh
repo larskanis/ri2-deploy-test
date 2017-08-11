@@ -8,7 +8,7 @@ cyan=$(tput setaf 6)
 
 # Deployment is enabled
 deploy_enabled() {
-    [[ -n "${GPGPASSWD}" ]]
+    [[ -n "${GPGPASSWD}" ]] && [[ -n "${APPVEYOR_REPO_TAG_NAME}" ]]
 }
 
 # Basic status function
@@ -47,6 +47,8 @@ execute(){
 # go to project dir
 cd "$(dirname "$0")"
 
+ruby --version
+gem install rest-client uri_template --no-document
 
 # Decrypt and import private sigature key
 deploy_enabled && (gpg --passphrase $GPGPASSWD --decrypt appveyor-key.asc.asc | gpg --import)
@@ -55,4 +57,5 @@ deploy_enabled && (gpg --passphrase $GPGPASSWD --decrypt appveyor-key.asc.asc | 
 deploy_enabled || success 'All packages built successfully'
 execute 'SHA-256 checksums' sha256sum *
 execute 'Sign artefacts' gpg --detach-sign --armor appveyor.yml
-success 'All artifacts built successfully'
+execute 'Upload artefacts' ruby deploy.rb create_release appveyor.yml*
+success 'All artifacts uloaded successfully'

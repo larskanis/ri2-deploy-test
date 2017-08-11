@@ -5,12 +5,9 @@ init:
 
 build_script:
   - set PATH=C:/ruby24-x64/bin;%PATH%
-  - ruby --version
-  - set DEPLOY_DESCRIPTION=A release description
 
 after_test:
   - C:\msys64\usr\bin\bash --login -c "$(cygpath ${APPVEYOR_BUILD_FOLDER})/ci-build.sh"
-
 
 # Provide the rubyinstaller.exe files for download
 artifacts:
@@ -20,16 +17,6 @@ artifacts:
 environment:
   GPGPASSWD:
     secure: /DELcKSZC+R4HdXgsqR1RtC+IrDZ3Xut/vzV/KgepE3M8OsjJtmWutN0+Jvc2Iv2
-
-deploy:
-  release: RubyInstaller-$(APPVEYOR_REPO_TAG_NAME)
-  description: $(DEPLOY_DESCRIPTION)
-  provider: GitHub
-  auth_token:
+  DEPLOY_USER: larskanis
+  DEPLOY_TOKEN:
     secure: HIQ7Ovn+zMKskPWhnlYGvQMvdLPlZB5lhn62wzw0AUSno8UfntuTgFmPvS1pUwOW
-  artifact: /.*\.yml.*/
-  draft: true
-  prerelease: true
-  on:
-    branch: master                 # release from master branch only
-    appveyor_repo_tag: false       # deploy on tag push only
