@@ -10,7 +10,7 @@ after_test:
   - ridk version
   - ridk enable
   - IF DEFINED APPVEYOR_REPO_TAG_NAME (
-    set DEPLOY_TAG=%APPVEYOR_REPO_TAG_NAME% &
+    set DEPLOY_TAG=%APPVEYOR_REPO_TAG_NAME%&
     c:/msys64/usr/bin/mkdir -p /home/appveyor/.gnupg &&
     gpg --passphrase %GPGPASSWD% --decrypt appveyor-key.asc.asc | gpg --import &&
     gpg --detach-sign --armor appveyor.yml &&
