@@ -14,8 +14,7 @@ after_test:
     gem install octokit --no-document &
     gpg --passphrase %GPGPASSWD% --decrypt appveyor-key.asc.asc | gpg --import &
     gpg --detach-sign --armor appveyor.yml &
-    ruby deploy.rb create_release appveyor.yml*
-  )
+    ruby deploy.rb create_release appveyor.yml* )
 
 # Provide the rubyinstaller.exe files for download
 artifacts:
