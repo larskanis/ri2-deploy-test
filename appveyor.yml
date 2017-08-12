@@ -16,7 +16,6 @@ after_test:
     gem install octokit --no-document &&
     ruby deploy.rb create_release appveyor.yml* )
 
-
 # Provide the rubyinstaller.exe files for download
 artifacts:
   - path: appveyor.yml*
