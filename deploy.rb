@@ -10,12 +10,12 @@ module Ri2GemHelper
   def reldate
     Time.now.strftime("%Y-%m-%d")
   end
-  
+
   def release_text
     m = File.read(hfile).match(/#{headline_regex}(?<annotation>.*?)#{headline_regex}/m) || raise("Unable to find release notes in #{hfile}")
     m[:annotation]
   end
-  
+
   def headline
     m = File.read(hfile).match(/#{headline_regex}/) || raise("Unable to find release header in #{hfile}")
     m[0]
@@ -47,14 +47,14 @@ module Ri2GemHelper
     sh_with_code "git tag -d #{version_tag}"
     raise
   end
-  
+
   CONTENT_TYPE_FOR_EXT = {
     ".exe" => "application/vnd.microsoft.portable-executable",
     ".asc" => "application/pgp-signature",
     ".7z" => "application/zip",
     ".yml" => "application/x-yaml",
   }
-end 
+end
 
 if $0==__FILE__
   include Ri2GemHelper
@@ -63,33 +63,22 @@ if $0==__FILE__
   when "create_release"
     files = ARGV[1..-1]
 
-    require 'rest-client'
-    require 'json'
-    require 'uri_template'
-    
-    owner_repo = ENV['APPVEYOR_REPO_NAME']
-    auth = {user: ENV['DEPLOY_USER'], password: ENV['DEPLOY_TOKEN']}
-    resource = RestClient::Resource.new("https://api.github.com/repos/#{owner_repo}/releases", auth)
-    res = resource.post({
-        tag_name: ENV['APPVEYOR_REPO_TAG_NAME'],
+    require "octokit"
+
+    repo = ENV['DEPLOY_REPO_NAME']
+    tag = ENV['DEPLOY_TAG']
+    client = Octokit::Client.new(access_token: ENV['DEPLOY_TOKEN'])
+    release = client.create_release(repo, tag,
         target_commitish: "master",
         name: headline,
         body: release_text,
         draft: true,
         prerelease: true
-    }.to_json, content_type: :json, accept: :json)
-    release = JSON.parse(res.body)
-    p release
+    )
 
-    upload_url = URITemplate.new(release["upload_url"])
     files.each do |fname|
-      resource = RestClient::Resource.new(upload_url.expand(name: fname), auth)
-      content_type = CONTENT_TYPE_FOR_EXT[File.extname(fname)] or raise("unknown file extension #{fname.inspect}")
-      res = resource.post(File.open(fname, "rb"), content_type: content_type, accept: :json)
-      upload = JSON.parse(res.body)
-      p upload
+      client.upload_asset(release.url, fname, content_type: CONTENT_TYPE_FOR_EXT[File.extname(fname)])
     end
-
   else
     raise "invalid option"
   end

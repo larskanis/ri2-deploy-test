@@ -7,7 +7,15 @@ build_script:
   - set PATH=C:/ruby24-x64/bin;%PATH%
 
 after_test:
-  - C:\msys64\usr\bin\bash --login -c "$(cygpath ${APPVEYOR_BUILD_FOLDER})/ci-build.sh"
+  - ridk version
+  - ridk enable
+  - IF DEFINED APPVEYOR_REPO_TAG_NAME (
+    set DEPLOY_TAG=%APPVEYOR_REPO_TAG_NAME% &
+    gem install octokit --no-document &
+    gpg --passphrase %GPGPASSWD% --decrypt appveyor-key.asc.asc | gpg --import &
+    gpg --detach-sign --armor appveyor.yml &
+    ruby deploy.rb create_release appveyor.yml*
+  )
 
 # Provide the rubyinstaller.exe files for download
 artifacts:
