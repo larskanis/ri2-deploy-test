@@ -11,7 +11,6 @@ after_test:
   - ridk enable
   - IF DEFINED APPVEYOR_REPO_TAG_NAME (
     set DEPLOY_TAG=%APPVEYOR_REPO_TAG_NAME% &
-    pacman -S --noconfirm --needed %MINGW_PACKAGE_PREFIX%-gnupg &&
     gpg --passphrase %GPGPASSWD% --decrypt appveyor-key.asc.asc | gpg --import &&
     gpg --detach-sign --armor appveyor.yml &&
     gem install octokit --no-document &&
