@@ -4,7 +4,7 @@ module Ri2GemHelper
   end
 
   def headline_regex
-    '([\w]+)-(\d+\.\d+\.\d+-\d+)([^\w]+)([2Y][0Y][0-9Y][0-9Y]-[0-1M][0-9M]-[0-3D][0-9D])([ \w]*)$'
+    '(?<product>[\w]+)-(?<version>\d+\.\d+\.\d+-[\d\w]+)([^\w]+)(?<date>[2Y][0Y][0-9Y][0-9Y]-[0-1M][0-9M]-[0-3D][0-9D])([ \w]*)$'
   end
 
   def reldate
@@ -19,6 +19,11 @@ module Ri2GemHelper
   def headline
     m = File.read(hfile).match(/#{headline_regex}/) || raise("Unable to find release header in #{hfile}")
     m[0]
+  end
+
+  def release_name
+    m = File.read(hfile).match(/#{headline_regex}/)
+    "#{m[:product]}-#{m[:version]}"
   end
 
   def update_history
@@ -67,6 +72,9 @@ if $0==__FILE__
 
     repo = ENV['DEPLOY_REPO_NAME']
     tag = ENV['DEPLOY_TAG']
+
+    raise "tag #{tag.inspect} != #{release_name.inspect}" if tag != release_name.downcase
+
     client = Octokit::Client.new(access_token: ENV['DEPLOY_TOKEN'])
     $stderr.puts "Create github release #{tag}"
     release = client.create_release(repo, tag,
