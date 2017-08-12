@@ -11,9 +11,9 @@ after_test:
   - ridk enable
   - IF DEFINED APPVEYOR_REPO_TAG_NAME (
     set DEPLOY_TAG=%APPVEYOR_REPO_TAG_NAME% &
-    gem install octokit --no-document &
-    gpg --passphrase %GPGPASSWD% --decrypt appveyor-key.asc.asc | gpg --import &
-    gpg --detach-sign --armor appveyor.yml &
+    gem install octokit --no-document &&
+    gpg --passphrase %GPGPASSWD% --decrypt appveyor-key.asc.asc - | gpg --import &&
+    gpg --detach-sign --armor appveyor.yml &&
     ruby deploy.rb create_release appveyor.yml* )
 
 # Provide the rubyinstaller.exe files for download
@@ -24,6 +24,6 @@ artifacts:
 environment:
   GPGPASSWD:
     secure: /DELcKSZC+R4HdXgsqR1RtC+IrDZ3Xut/vzV/KgepE3M8OsjJtmWutN0+Jvc2Iv2
-  DEPLOY_USER: larskanis
+  DEPLOY_REPO_NAME: larskanis/ri2-deploy-test
   DEPLOY_TOKEN:
     secure: HIQ7Ovn+zMKskPWhnlYGvQMvdLPlZB5lhn62wzw0AUSno8UfntuTgFmPvS1pUwOW
