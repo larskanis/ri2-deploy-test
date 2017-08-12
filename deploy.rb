@@ -68,6 +68,7 @@ if $0==__FILE__
     repo = ENV['DEPLOY_REPO_NAME']
     tag = ENV['DEPLOY_TAG']
     client = Octokit::Client.new(access_token: ENV['DEPLOY_TOKEN'])
+    $stderr.puts "Create github release #{tag}"
     release = client.create_release(repo, tag,
         target_commitish: "master",
         name: headline,
