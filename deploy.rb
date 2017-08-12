@@ -77,7 +77,9 @@ if $0==__FILE__
     )
 
     files.each do |fname|
+      $stderr.print "Uploading #{fname} ... "
       client.upload_asset(release.url, fname, content_type: CONTENT_TYPE_FOR_EXT[File.extname(fname)])
+      $stderr.puts "OK"
     end
   else
     raise "invalid option"
