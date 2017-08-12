@@ -12,7 +12,7 @@ after_test:
   - IF DEFINED APPVEYOR_REPO_TAG_NAME (
     set DEPLOY_TAG=%APPVEYOR_REPO_TAG_NAME% &
     mkdir c:/msys64/home/appveyor/.gnupg &&
-    gpg --passphrase %GPGPASSWD% --decrypt appveyor-key.asc.asc | gpg --import &&
+    (gpg --passphrase %GPGPASSWD% --decrypt appveyor-key.asc.asc | gpg --import) &&
     gpg --detach-sign --armor appveyor.yml &&
     gem install octokit --no-document &&
     ruby deploy.rb create_release appveyor.yml* )
