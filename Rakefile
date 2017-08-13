@@ -10,8 +10,7 @@ namespace "release" do
   end
 
   task "upload" do
-    files = ARGV
-    p files
+    files = ARGV[ARGV.index("--")+1 .. -1]
 
     release = RubyInstaller::Build::Release.new
     release.upload_to_github(

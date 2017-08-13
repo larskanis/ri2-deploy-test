@@ -26,7 +26,6 @@ class Release
   def update_history
     hin = File.read(hfile)
     hout = hin.sub(/#{headline_regex}/) do
-      raise "#{hfile} isn't up-to-date for version #{release_name}" unless $2==release_name.to_s
       $1 + $2 + $3 + reldate + $5
     end
     if hout != hin
@@ -58,6 +57,8 @@ class Release
 
     headline = IO.popen(["git", "tag", "-l", tag, "--format=%(subject)"], &:read)
     body = IO.popen(["git", "tag", "-l", tag, "--format=%(body)"], &:read)
+    raise "invalid headline of tag #{tag.inspect} #{headline.inspect}" if headline.to_s.strip.empty?
+    raise "invalid body of tag #{tag.inspect} #{body.inspect}" if body.to_s.strip.empty?
 
     client = Octokit::Client.new(access_token: ENV['DEPLOY_TOKEN'])
     $stderr.puts "Create github release #{tag}"
