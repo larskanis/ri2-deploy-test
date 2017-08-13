@@ -8,6 +8,7 @@ build_script:
 
 after_test:
   - ridk version
+  - exit
   - ridk enable
   - IF DEFINED APPVEYOR_REPO_TAG_NAME (
     set DEPLOY_TAG=%APPVEYOR_REPO_TAG_NAME%&
@@ -28,3 +29,6 @@ environment:
   DEPLOY_REPO_NAME: larskanis/ri2-deploy-test
   DEPLOY_TOKEN:
     secure: HIQ7Ovn+zMKskPWhnlYGvQMvdLPlZB5lhn62wzw0AUSno8UfntuTgFmPvS1pUwOW
+  matrix:
+    - target_ruby: "2.4.1"
+#    - target_ruby: "2.5.0"

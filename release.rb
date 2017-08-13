@@ -57,8 +57,8 @@ class Release
 
     headline = IO.popen(["git", "tag", "-l", tag, "--format=%(subject)"], &:read)
     body = IO.popen(["git", "tag", "-l", tag, "--format=%(body)"], &:read)
-    raise "invalid headline of tag #{tag.inspect} #{headline.inspect}" if headline.to_s.strip.empty?
-    raise "invalid body of tag #{tag.inspect} #{body.inspect}" if body.to_s.strip.empty?
+    raise "invalid headline of tag #{tag.inspect}: #{headline.inspect}" if headline.to_s.strip.empty?
+    raise "invalid body of tag #{tag.inspect}: #{body.inspect}" if body.to_s.strip.empty?
 
     client = Octokit::Client.new(access_token: ENV['DEPLOY_TOKEN'])
     $stderr.puts "Create github release #{tag}"
