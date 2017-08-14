@@ -38,7 +38,7 @@ class Release
   def tag_version
     rel = release_name.downcase
     $stderr.puts "Tag release #{rel} with annotation:"
-    rt = release_text
+    rt = release_text.gsub(/\A[# ]+/, "")
     $stderr.puts(rt.gsub(/^/, "    "))
     IO.popen(["git", "tag", "--file=-", rel, "--cleanup=whitespace"], "w") do |fd|
       fd.write rt

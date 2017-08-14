@@ -11,12 +11,14 @@ after_test:
   - exit
   - ridk enable
   - IF DEFINED APPVEYOR_REPO_TAG_NAME (
-    set DEPLOY_TAG=%APPVEYOR_REPO_TAG_NAME%&
-    c:/msys64/usr/bin/mkdir -p /home/appveyor/.gnupg &&
-    gpg --passphrase %GPGPASSWD% --decrypt appveyor-key.asc.asc | gpg --import &&
-    gpg --detach-sign --armor appveyor.yml &&
-    gem install octokit --no-document &&
-    rake release:upload -- appveyor.yml* )
+    echo.%APPVEYOR_REPO_TAG_NAME% | findstr /C:"%target_ruby%">nul && (
+      set DEPLOY_TAG=%APPVEYOR_REPO_TAG_NAME%&
+      c:/msys64/usr/bin/mkdir -p /home/appveyor/.gnupg &&
+      gpg --passphrase %GPGPASSWD% --decrypt appveyor-key.asc.asc | gpg --import &&
+      gpg --detach-sign --armor appveyor.yml &&
+      gem install octokit --no-document &&
+      rake release:upload -- appveyor.yml* )
+    ) || ( ruby -e "puts 'No release upload'" )
 
 # Provide the rubyinstaller.exe files for download
 artifacts:
@@ -31,4 +33,4 @@ environment:
     secure: HIQ7Ovn+zMKskPWhnlYGvQMvdLPlZB5lhn62wzw0AUSno8UfntuTgFmPvS1pUwOW
   matrix:
     - target_ruby: "2.4.1"
-#    - target_ruby: "2.5.0"
+    - target_ruby: "2.5.0"
